@@ -1,3 +1,4 @@
+local Mouse = cloneref(LocalPlayer:GetMouse())
 -- Hexagon UI Library
 local TweenService, RunService, UserInputService,gui,dragging,dragInput,dragStart,startPos,cpt,cpf,cppicking,cppickingVal,cppickingAlpha,cphue,cpsat,cpval,focused,highest,focusedBox = game:GetService("TweenService"),game:GetService("RunService"), game:GetService("UserInputService")
 local cpalpha = 0
@@ -1859,7 +1860,7 @@ function library:CreateWindow(csize, cpos)
 						repeat 
 							wait()
 							
-							local mouse = game:GetService("Players").LocalPlayer:GetMouse()
+							local mouse = Mouse
 							local obj = color.hueselector
 							local pos = (mouse.Y-obj.AbsolutePosition.Y)/obj.AbsoluteSize.Y
 							pos = (pos < 0 and 0) or (pos > 1 and 1) or pos
@@ -1885,7 +1886,7 @@ function library:CreateWindow(csize, cpos)
 						repeat 
 							wait()
 							
-							local mouse = game:GetService("Players").LocalPlayer:GetMouse()
+							local mouse = Mouse
 							local obj = color.hueselector
 							local x = (mouse.X-obj.AbsolutePosition.X)/obj.AbsoluteSize.X
 							local y = (mouse.Y-obj.AbsolutePosition.Y)/obj.AbsoluteSize.Y
