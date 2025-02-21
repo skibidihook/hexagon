@@ -385,20 +385,9 @@ function library:CreateWindow(csize, cpos)
 	local window = {xpos = 0, close = true, draggable = true}
 	table.insert(self.windows, window)
 	
-	local function randomString(length)
-    		local chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    		local str = ""
-    		for i = 1, length do
-        		local rand = math.random(1, #chars)
-        		str = str .. chars:sub(rand, rand)
-    		end
-    		return str
-	end
-
 	self.base = self.base or self:create("ScreenGui", {
-    	Name = randomString(math.random(10, 25)),
-    	Parent = gethui()
-	ProtectGui(ScreenGui);
+		Name = library.settings.guiname,
+		Parent = game.CoreGui
 	})
 
 	self.pointer = self.pointer or self:create("ImageLabel", {
@@ -1860,7 +1849,7 @@ function library:CreateWindow(csize, cpos)
 						repeat 
 							wait()
 							
-							local mouse = local mouse = game:GetService("Players").LocalPlayer:GetMouse()
+							local mouse = game:GetService("Players").LocalPlayer:GetMouse()
 							local obj = color.hueselector
 							local pos = (mouse.Y-obj.AbsolutePosition.Y)/obj.AbsoluteSize.Y
 							pos = (pos < 0 and 0) or (pos > 1 and 1) or pos
@@ -1886,7 +1875,7 @@ function library:CreateWindow(csize, cpos)
 						repeat 
 							wait()
 							
-							local mouse = local mouse = game:GetService("Players").LocalPlayer:GetMouse()
+							local mouse = game:GetService("Players").LocalPlayer:GetMouse()
 							local obj = color.hueselector
 							local x = (mouse.X-obj.AbsolutePosition.X)/obj.AbsoluteSize.X
 							local y = (mouse.Y-obj.AbsolutePosition.Y)/obj.AbsoluteSize.Y
