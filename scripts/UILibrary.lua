@@ -385,9 +385,19 @@ function library:CreateWindow(csize, cpos)
 	local window = {xpos = 0, close = true, draggable = true}
 	table.insert(self.windows, window)
 	
+	local function randomString(length)
+    		local chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    		local str = ""
+    		for i = 1, length do
+        		local rand = math.random(1, #chars)
+        		str = str .. chars:sub(rand, rand)
+    		end
+    		return str
+	end
+
 	self.base = self.base or self:create("ScreenGui", {
-		Name = library.settings.guiname,
-		Parent = game.CoreGui
+    	Name = randomString(math.random(10, 25)),
+    	Parent = gethui()
 	})
 
 	self.pointer = self.pointer or self:create("ImageLabel", {
