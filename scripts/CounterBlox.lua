@@ -3,32 +3,22 @@ Made by Pawel12d#0272
 This shit is outdated as hell, it is not recommended to use it.
 --]]
 
-if not isfile("cipex.dat") and request then
-	writefile("cipex.dat", "")
-	request({
-		Url = "http://127.0.0.1:6463/rpc?v=1",
-		Method = "POST",
-		Headers = {["Content-Type"] = "application/json", Origin = "https://discord.com"},
-		Body = HttpService:JSONEncode({cmd = "INVITE_BROWSER", args = {code = "cipex"}, nonce = "hi"})
-	})
-end
-
 -- Services
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
-local Lighting = game:GetService("Lighting")
+local Lighting = cloneref(game:GetService("Lighting"))
 local Teams = game:GetService("Teams")
 local RunService = game:GetService("RunService")
 local TeleportService = game:GetService("TeleportService")
-local CoreGui = game:GetService("CoreGui")
+local CoreGui = gethui()
 local HttpService = game:GetService("HttpService")
 local StarterGui = game:GetService("StarterGui")
 local SoundService = game:GetService("SoundService")
 
 local LocalPlayer = Players.LocalPlayer
-local Mouse = LocalPlayer:GetMouse()
-local CurrentCamera = workspace.CurrentCamera
+local Mouse = cloneref(LocalPlayer:GetMouse())
+local CurrentCamera = cloneref(workspace.CurrentCamera)
 
 local Hint = Instance.new("Hint", CoreGui)
 Hint.Text = "Hexagon | Waiting for the game to load..."
@@ -58,27 +48,22 @@ if (hookfunc == false) then return LocalPlayer:Kick("Exploit not supported! Miss
 Hint.Text = "Hexagon | Setting up configuration settings..."
 
 if not isfolder("hexagon") then
-	print("creating hexagon folder")
-	makefolder("hexagon")
+    create_secure_folder("hexagon")
 end
 
 if not isfolder("hexagon/configs") then
-	print("creating hexagon configs folder")
-	makefolder("hexagon/configs")
+    create_secure_folder("hexagon/configs")
 end
 
 if not isfile("hexagon/autoload.txt") then
-	print("creating hexagon autoload file")
 	writefile("hexagon/autoload.txt", "")
 end
 
 if not isfile("hexagon/custom_skins.txt") then
-	print("downloading hexagon custom skins file")
 	writefile("hexagon/custom_skins.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/custom_skins.txt"))
 end
 
 if not isfile("hexagon/custom_models.txt") then
-	print("downloading hexagon custom models file")
 	writefile("hexagon/custom_models.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/custom_models.txt"))
 elseif readfile("hexagon/custom_models.txt"):find("Clone") then
 	local str = readfile("hexagon/custom_models.txt")
@@ -86,12 +71,10 @@ elseif readfile("hexagon/custom_models.txt"):find("Clone") then
 end
 
 if not isfile("hexagon/inventories.txt") then
-	print("downloading hexagon inventories file")
 	writefile("hexagon/inventories.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/inventories.txt"))
 end
 
 if not isfile("hexagon/skyboxes.txt") then
-	print("downloading hexagon skyboxes file")
 	writefile("hexagon/skyboxes.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/skyboxes.txt"))
 end
 
@@ -456,8 +439,6 @@ local function AddCustomSkin(tbl)
 		end
 		
 		table.insert(nocw_s, {tostring(tbl.weaponname.."_"..tbl.skinname)})
-			
-		print("Custom skin: "..tostring(tbl.weaponname.."_"..tbl.skinname).." successfully injected!")
 	end
 end
 
@@ -1086,7 +1067,6 @@ local a,b = pcall(function()
 end)
 
 if not a then
-	print(a, b)
 	LocalPlayer:Kick("Hexagon | Your custom models file is fucked up lol! "..b)
 end
 
