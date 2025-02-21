@@ -60,22 +60,22 @@ if not isfile("hexagon/autoload.txt") then
 end
 
 if not isfile("hexagon/custom_skins.txt") then
-	writefile("hexagon/custom_skins.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/custom_skins.txt"))
+	writefile("hexagon/custom_skins.txt", game:HttpGet("https://raw.githubusercontent.com/skibidihook/hexagon/main/scripts/default_data/custom_skins.txt"))
 end
 
 if not isfile("hexagon/custom_models.txt") then
-	writefile("hexagon/custom_models.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/custom_models.txt"))
+	writefile("hexagon/custom_models.txt", game:HttpGet("https://raw.githubusercontent.com/skibidihook/hexagon/main/scripts/default_data/custom_models.txt"))
 elseif readfile("hexagon/custom_models.txt"):find("Clone") then
 	local str = readfile("hexagon/custom_models.txt")
 	writefile("hexagon/custom_models.txt", str)
 end
 
 if not isfile("hexagon/inventories.txt") then
-	writefile("hexagon/inventories.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/inventories.txt"))
+	writefile("hexagon/inventories.txt", game:HttpGet("https://raw.githubusercontent.com/skibidihook/hexagon/main/scripts/default_data/inventories.txt"))
 end
 
 if not isfile("hexagon/skyboxes.txt") then
-	writefile("hexagon/skyboxes.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/skyboxes.txt"))
+	writefile("hexagon/skyboxes.txt", game:HttpGet("https://raw.githubusercontent.com/skibidihook/hexagon/main/scripts/default_data/skyboxes.txt"))
 end
 
 Hint.Text = "Hexagon | Loading..."
@@ -156,8 +156,8 @@ local Configs = {}
 local Inventories = loadstring("return "..readfile("hexagon/inventories.txt"))()
 local Skyboxes = loadstring("return "..readfile("hexagon/skyboxes.txt"))()
 
-local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/ESP.lua"))()
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/UILibrary.lua"))()
+local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/skibidihook/hexagon/main/scripts/ESP.lua"))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/skibidihook/hexagon/main/scripts/UILibrary.lua"))()
 
 local Window = library:CreateWindow(Vector2.new(500, 500), Vector2.new((CurrentCamera.ViewportSize.X/2) - 250, (CurrentCamera.ViewportSize.Y/2) - 250))
 
