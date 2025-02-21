@@ -147,8 +147,9 @@ local FOVCircle = Drawing.new("Circle")
 local Configs = {}
 local Inventories = loadstring("return "..readfile("hexagon/inventories.txt"))()
 local Skyboxes = loadstring("return "..readfile("hexagon/skyboxes.txt"))()
+
 local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/skibidihook/hexagon/main/scripts/ESP.lua"))()
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/UILibrary.lua"))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/skibidihook/hexagon/main/scripts/UILibrary.lua"))()
 
 local Window = library:CreateWindow(Vector2.new(500, 500), Vector2.new((CurrentCamera.ViewportSize.X/2) - 250, (CurrentCamera.ViewportSize.Y/2) - 250))
 
@@ -1648,6 +1649,7 @@ local SettingsTabCategoryCredits = SettingsTab:AddCategory("Credits", 2)
 SettingsTabCategoryCredits:AddLabel("Script - Pawel12d#0272")
 SettingsTabCategoryCredits:AddLabel("ESP - Modified Kiriot ESP")
 SettingsTabCategoryCredits:AddLabel("UI Library - Modified Phantom Ware")
+SettingsTabCategoryCredits:AddLabel("Detected but runs")
 SettingsTabCategoryCredits:AddLabel("")
 SettingsTabCategoryCredits:AddLabel("Special Thanks To:")
 SettingsTabCategoryCredits:AddLabel("ny#2817 (died of cancer)")
@@ -1984,135 +1986,100 @@ end)
 wait(3)
 Hint.Text = "Hexagon | Setting up hooks..."
 
-hookfunc(getrenv().xpcall, function() end)
+Players = game:GetService("Players")
+LocalPlayer = Players.LocalPlayer
 
--- what the fuck
-local oldNamecall; oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
-	local method = getnamecallmethod()
-	local callingscript = getcallingscript()
-    local args = {...}
-	
-	if not checkcaller() then
-		if method == "Kick" then
-			return
-		elseif method == "FireServer" then
-			if self.Name == "ReplicateCamera" then
-				if library.pointers.MiscellaneousTabCategoryMainAntiSpectators.value == true then
-					args[1] = CFrame.new()
-				elseif library.pointers.VisualsTabCategoryThirdPersonEnabled.value == true then
-					args[1] = CurrentCamera.CFrame * CFrame.new(0, 0, -library.pointers.VisualsTabCategoryThirdPersonDistance.value)
-				end
-			elseif self.Name == "ControlTurn" and library.pointers.AimbotTabCategoryAntiAimbotEnabled.value == true and library.pointers.AimbotTabCategoryAntiAimbotPitch.value ~= "Default" then
-				local angle = (
-					library.pointers.AimbotTabCategoryAntiAimbotPitch.value == "Up" and 1 or
-					library.pointers.AimbotTabCategoryAntiAimbotPitch.value == "Down" and -1 or
-					library.pointers.AimbotTabCategoryAntiAimbotPitch.value == "Boneless" and -5 or
-					library.pointers.AimbotTabCategoryAntiAimbotPitch.value == "Random" and (math.random(1,2) == 1 and 1 or -1)
-				)
-				if angle then
-					args[1] = angle
-				end
-			elseif string.len(self.Name) == 38 then
-				return wait(99e99)
-			elseif self.Name == "ApplyGun" and args[1] == WeaponsData.Banana or args[1] == WeaponsData["Flip Knife"] then
-				args[1] = WeaponsData.Karambit
-			elseif self.Name == "HitPart" then
-				args[8] = args[8] * library.pointers.MiscellaneousTabCategoryGunModsDamageMultiplier.value
+local function disableHumanoidChecks()
+    if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("Humanoid") then return end
+    local humanoid = LocalPlayer.Character:FindFirstChild("Humanoid")
+                        for _, v in getconnections(humanoid:GetPropertyChangedSignal("WalkSpeed")) do
+                        hookfunction(v.Function, function() end)
+                        for _, v in getconnections(humanoid:GetPropertyChangedSignal("JumpHeight")) do
+                        hookfunction(v.Function, function() end)
+                        for _, v in getconnections(humanoid:GetPropertyChangedSignal("JumpPower")) do
+                        hookfunction(v.Function, function() end)
+                        for _, v in getconnections(humanoid:GetPropertyChangedSignal("Gravity")) do
+                        hookfunction(v.Function, function() end)
+                        for _, v in getconnections(humanoid:GetPropertyChangedSignal("HipHeight")) do
+                        hookfunction(v.Function, function() end)
+                    end
+                end
+            end
+        end
+    end
+end
 
-				if library.pointers.VisualsTabCategoryOthersBulletTracers.value == true then
-					spawn(function()
-						local BulletTracers = Instance.new("Part")
-						BulletTracers.Anchored = true
-						BulletTracers.CanCollide = false
-						BulletTracers.Material = "ForceField"
-						BulletTracers.Color = library.pointers.VisualsTabCategoryOthersBulletTracersColor.value
-						BulletTracers.Size = Vector3.new(0.1, 0.1, (LocalPlayer.Character.Head.CFrame.p - args[2]).magnitude)
-						BulletTracers.CFrame = CFrame.new(LocalPlayer.Character.Head.CFrame.p, args[2]) * CFrame.new(0, 0, -BulletTracers.Size.Z / 2)
-						BulletTracers.Name = "BulletTracers"
-						BulletTracers.Parent = CurrentCamera
-						wait(3)
-						BulletTracers:Destroy()
-					end)
-				end
-				
-				if library.pointers.VisualsTabCategoryOthersBulletImpacts.value == true then
-					spawn(function()
-						local BulletImpacts = Instance.new("Part")
-						BulletImpacts.Anchored = true
-						BulletImpacts.CanCollide = false
-						BulletImpacts.Material = "ForceField"
-						BulletImpacts.Color = library.pointers.VisualsTabCategoryOthersBulletImpactsColor.value
-						BulletImpacts.Size = Vector3.new(0.25, 0.25, 0.25)
-						BulletImpacts.CFrame = CFrame.new(args[2])
-						BulletImpacts.Name = "BulletImpacts"
-						BulletImpacts.Parent = CurrentCamera
-						wait(3)
-						BulletImpacts:Destroy()
-					end)
-				end
-				
-				if args[1].Parent == HexagonFolder then
-					if args[1].PlayerName.Value.Character and args[1].PlayerName.Value.Character.Head ~= nil then
-						args[1] = args[1].PlayerName.Value.Character.Head
-					end
-				end
-			elseif self.Name == "test" then
-				return wait(99e99)
-			elseif self.Name == "FallDamage" and (library.pointers.MiscellaneousTabCategoryMainNoFallDamage.value == true or JumpBug == true) then
-				return
-			elseif self.Name == "BURNME" and library.pointers.MiscellaneousTabCategoryMainNoFireDamage.value == true then
-				return
-			elseif self.Name == "DataEvent" and args[1][1] == "EquipItem" then
-				local Weapon,Skin = args[1][3], string.split(args[1][4][1], "_")[2]
-				local EquipTeams = (args[1][2] == "Both" and {"T", "CT"}) or {args[1][2]}
+local function disableAntiCheat()
+    if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then return end
+    local char = LocalPlayer.Character
+    for _, v in getconnections(char.HumanoidRootPart:GetPropertyChangedSignal("CFrame")) do
+        hookfunction(v.Function, function() end)
+    end
+    for _, v in getconnections(char.HumanoidRootPart:GetPropertyChangedSignal("Velocity")) do
+        hookfunction(v.Function, function() end)
+    end
+end
 
-				for i,v in pairs(EquipTeams) do
-					LocalPlayer.SkinFolder[v.."Folder"][Weapon]:ClearAllChildren()
-					LocalPlayer.SkinFolder[v.."Folder"][Weapon].Value = Skin
-					
-					if args[1][4][2] == "StatTrak" then
-						local Marker = Instance.new("StringValue")
-						Marker.Name = "StatTrak"
-						Marker.Value = args[1][4][3]
-						Marker.Parent = LocalPlayer.SkinFolder[v.."Folder"][Weapon]
-						
-						local Count = Instance.new("IntValue")
-						Count.Name = "Count"
-						Count.Value = args[1][4][4]
-						Count.Parent = Marker
-					end
-				end
-			end
-		elseif method == "InvokeServer" then
-			if self.Name == "Moolah" then
-				return wait(99e99)
-			elseif self.Name == "Hugh" then
-				return wait(99e99)
-			elseif self.Name == "Filter" and callingscript.Name == "DisplayChat" and library.pointers.MiscellaneousTabCategoryMainNoChatFilter.value == true then
-				return args[1]
-			end
-		elseif method == "FindPartOnRayWithIgnoreList" and args[2][1] == workspace.Debris then
-			if library.pointers.MiscellaneousTabCategoryGunModsWallbang.value == true then
-				table.insert(args[2], workspace.Map)
-			end
-			
-			if IsAlive(LocalPlayer) and SilentRagebot.target ~= nil then
-				args[1] = Ray.new(LocalPlayer.Character.Head.Position, (SilentRagebot.target.Position - LocalPlayer.Character.Head.Position).unit * (WeaponsData[LocalPlayer.Character.EquippedTool.Value].Range.Value * 0.1))
-			elseif IsAlive(LocalPlayer) and SilentLegitbot.target ~= nil then
-				local hitchance = math.random(0, 100)
-				
-				if hitchance <= library.pointers.AimbotTabCategoryLegitbotHitchance.value then
-					args[1] = Ray.new(LocalPlayer.Character.Head.Position, (SilentLegitbot.target.Position - LocalPlayer.Character.Head.Position).unit * (WeaponsData[LocalPlayer.Character.EquippedTool.Value].Range.Value * 0.1))
-				end
-			end
-		elseif method == "SetPrimaryPartCFrame" and self.Name == "Arms" and library.pointers.VisualsTabCategoryViewmodelEnabled.value == true then
-			args[1] = args[1] * CFrame.new(Vector3.new(math.rad(library.pointers.VisualsTabCategoryViewmodelOffsetX.value-180),math.rad(library.pointers.VisualsTabCategoryViewmodelOffsetY.value-180),math.rad(library.pointers.VisualsTabCategoryViewmodelOffsetZ.value-180))) * CFrame.Angles(0, 0, math.rad(library.pointers.VisualsTabCategoryViewmodelOffsetRoll.value-180))
-		end
-	end
-	
-	return oldNamecall(self, unpack(args))
+LocalPlayer.CharacterAdded:Connect(function(char)
+        disableAntiCheat()
+        disableHumanoidChecks()
 end)
 
+hookfunc(getrenv().xpcall, function() end)
+
+local oldNamecall;
+oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+    local method = getnamecallmethod()
+    local callingscript = getcallingscript()
+    local args = {...}
+    
+    if not checkcaller() then
+        elseif method == "FireServer" then
+            if self.Name == "ReplicateCamera" then
+                if library.pointers.MiscellaneousTabCategoryMainAntiSpectators.value then
+                    args[1] = CFrame.new()
+                elseif library.pointers.VisualsTabCategoryThirdPersonEnabled.value then
+                    args[1] = CurrentCamera.CFrame * CFrame.new(0, 0, -library.pointers.VisualsTabCategoryThirdPersonDistance.value)
+                end
+            elseif #self.Name == 38 then
+                return task.wait(math.huge)
+            elseif self.Name == "FallDamage" and (library.pointers.MiscellaneousTabCategoryMainNoFallDamage.value or JumpBug) then
+                return
+            elseif self.Name == "BURNME" and library.pointers.MiscellaneousTabCategoryMainNoFireDamage.value then
+                return
+            end
+            elseif method == "InvokeServer" then
+            if self.Name == "Moolah" or self.Name == "Hugh" then
+                return task.wait(math.huge)
+            elseif self.Name == "Filter" and callingscript.Name == "DisplayChat" and library.pointers.MiscellaneousTabCategoryMainNoChatFilter.value then
+                return args[1]
+            end
+			--[[
+            elseif method == "FindPartOnRayWithIgnoreList" and args[2][1] == workspace.Debris then
+            if library.pointers.MiscellaneousTabCategoryGunModsWallbang.value then
+                table.insert(args[2], workspace.Map)
+            end
+            if IsAlive(LocalPlayer) and SilentRagebot.target then
+                args[1] = Ray.new(LocalPlayer.Character.Head.Position, (SilentRagebot.target.Position - LocalPlayer.Character.Head.Position).unit * (WeaponsData[LocalPlayer.Character.EquippedTool.Value].Range.Value * 0.1))
+            elseif IsAlive(LocalPlayer) and SilentLegitbot.target then
+                local hitchance = math.random(0, 100)
+                if hitchance <= library.pointers.AimbotTabCategoryLegitbotHitchance.value then
+                    args[1] = Ray.new(LocalPlayer.Character.Head.Position, (SilentLegitbot.target.Position - LocalPlayer.Character.Head.Position).unit * (WeaponsData[LocalPlayer.Character.EquippedTool.Value].Range.Value * 0.1))
+                end
+            end
+			--]]
+            elseif method == "SetPrimaryPartCFrame" and self.Name == "Arms" and library.pointers.VisualsTabCategoryViewmodelEnabled.value then
+            args[1] = args[1] * CFrame.new(Vector3.new(
+                math.rad(library.pointers.VisualsTabCategoryViewmodelOffsetX.value-180),
+                math.rad(library.pointers.VisualsTabCategoryViewmodelOffsetY.value-180),
+                math.rad(library.pointers.VisualsTabCategoryViewmodelOffsetZ.value-180)))
+                * CFrame.Angles(0, 0, math.rad(library.pointers.VisualsTabCategoryViewmodelOffsetRoll.value-180))
+        end
+    end
+    
+    return oldNamecall(self, unpack(args))
+end)
+		--[[
 -- what the fuck
 local oldNewIndex; oldNewIndex = hookmetamethod(LocalPlayer.PlayerGui.Client, "__newindex", function(self, idx, val)
 	if not checkcaller() then
@@ -2128,7 +2095,6 @@ local oldNewIndex; oldNewIndex = hookmetamethod(LocalPlayer.PlayerGui.Client, "_
 	
     return oldNewIndex(self, idx, val)
 end)
-
 -- what the fuck
 local oldIndex; oldIndex = hookmetamethod(LocalPlayer.PlayerGui.Client, "__index", function(self, idx)
 	if idx == "Value" then
@@ -2155,7 +2121,7 @@ local oldIndex; oldIndex = hookmetamethod(LocalPlayer.PlayerGui.Client, "__index
 
     return oldIndex(self, idx)
 end)
-
+			--]]
 DisplayChat.createNewMessage = function(plr, msg, teamcolor, msgcolor, offset, line)
 	if library.pointers.MiscellaneousTabCategoryMainNNSDontTalk.value == true and plr ~= LocalPlayer.Name then
 		msg = "I am retarded."
