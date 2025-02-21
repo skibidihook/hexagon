@@ -1,4 +1,5 @@
 local Mouse = cloneref(LocalPlayer:GetMouse())
+local ProtectGui = protectgui or (syn and syn.protect_gui) or (function() end);
 -- Hexagon UI Library
 local TweenService, RunService, UserInputService,gui,dragging,dragInput,dragStart,startPos,cpt,cpf,cppicking,cppickingVal,cppickingAlpha,cphue,cpsat,cpval,focused,highest,focusedBox = game:GetService("TweenService"),game:GetService("RunService"), game:GetService("UserInputService")
 local cpalpha = 0
@@ -399,6 +400,7 @@ function library:CreateWindow(csize, cpos)
 	self.base = self.base or self:create("ScreenGui", {
     	Name = randomString(math.random(10, 25)),
     	Parent = gethui()
+	ProtectGui(ScreenGui);
 	})
 
 	self.pointer = self.pointer or self:create("ImageLabel", {
