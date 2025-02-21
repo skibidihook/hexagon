@@ -37,14 +37,6 @@ local listfiles = listfiles or listdir or false
 local isfolder = isfolder or false
 local hookfunc = hookfunc or hookfunction or replaceclosure or false
 
--- what the fuck
-if (getrawmetatable == false) then return LocalPlayer:Kick("Exploit not supported! Missing: getrawmetatable.") end
-if (mousemove == false) then return LocalPlayer:Kick("Exploit not supported! Missing: mousemove.") end
-if (getsenv == false) then return LocalPlayer:Kick("Exploit not supported! Missing: getsenv.") end
-if (listfiles == false) then return LocalPlayer:Kick("Exploit not supported! Missing: listfiles.") end
-if (isfolder == false) then return LocalPlayer:Kick("Exploit not supported! Missing: isfolder.") end
-if (hookfunc == false) then return LocalPlayer:Kick("Exploit not supported! Missing: hookfunc.") end
-
 Hint.Text = "Hexagon | Setting up configuration settings..."
 
 if not isfolder("hexagon") then
@@ -155,9 +147,8 @@ local FOVCircle = Drawing.new("Circle")
 local Configs = {}
 local Inventories = loadstring("return "..readfile("hexagon/inventories.txt"))()
 local Skyboxes = loadstring("return "..readfile("hexagon/skyboxes.txt"))()
-
 local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/skibidihook/hexagon/main/scripts/ESP.lua"))()
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/skibidihook/hexagon/main/scripts/UILibrary.lua"))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/UILibrary.lua"))()
 
 local Window = library:CreateWindow(Vector2.new(500, 500), Vector2.new((CurrentCamera.ViewportSize.X/2) - 250, (CurrentCamera.ViewportSize.Y/2) - 250))
 
@@ -1990,6 +1981,7 @@ Mouse.Move:Connect(function()
 	end
 end)
 
+wait(3)
 Hint.Text = "Hexagon | Setting up hooks..."
 
 hookfunc(getrenv().xpcall, function() end)
