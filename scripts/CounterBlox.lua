@@ -1626,7 +1626,6 @@ SettingsTabCategoryConfigs:AddButton("Load", function()
 	end)
 	
 	if a == false then
-		warn("Config Loading Error", a, b)
 	elseif a == true then
 		library:LoadConfiguration(cfg)
 	end
@@ -2183,7 +2182,6 @@ if readfile("hexagon/autoload.txt") ~= "" and isfile("hexagon/configs/"..readfil
 	end)
 	
 	if a == false then
-		warn("Config Loading Error", a, b)
 	elseif a == true then
 		library:LoadConfiguration(cfg)
 	end
