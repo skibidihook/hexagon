@@ -2,16 +2,8 @@
 repeat wait() until game:IsLoaded()
 local LoadingTime = tick();
 
-local pls = game:GetService("Players")
-local lp  = pls.LocalPlayer
-
-local guiScript = lp:FindFirstChild("PlayerGui")
-    and lp.PlayerGui:FindFirstChild("GUI")
-    and lp.PlayerGui.GUI:FindFirstChild("Script")
-
-if guiScript then
-    guiScript.Disabled = true
-end
+LPH_NO_VIRTUALIZE = function(a) return a end
+LPH_NO_UPVALUES = function(a) return a end
 ------------------------------------ REPO ------------------------------------
 local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/'
 ------------------------------------ LINKS ------------------------------------
@@ -1003,6 +995,7 @@ selfchmams:AddColorPicker('selfchams_outline', {Default = C3(0, 0, 0), Title = '
 CamTab:AddToggle('cam_fovenabled', {Text = 'Override FOV', Default = false}):OnChanged(function() end)
 CamTab:AddSlider('cam_fovvalue', {Text = 'FOV', Default = 70, Min = 60, Max = 120, Rounding = 0, Compact = false}):OnChanged(function() end)
 CamTab:AddToggle('cam_sway', {Text = 'Disable Weapon Swaying', Default = false}):OnChanged(function() end)
+CamTab:AddToggle('cam_forcecross', {Text = 'Force Crosshair', Default = false}):OnChanged(function() end)
 CamTab:AddToggle('cam_flash', {Text = 'Remove Flash', Default = false})
 Toggles.cam_flash:OnChanged(function()
     if Toggles.cam_flash.Value == true then
@@ -1323,7 +1316,9 @@ end)
 
 MiscSec3:AddToggle('tweaks_fire', {Text = 'No Fire Damage', Default = false})
 MiscSec3:AddToggle('tweaks_fall', {Text = 'No Fall Damage', Default = false})
+MiscSec3:AddToggle('tweaks_cash', {Text = 'Infinite Cash', Default = false})
 MiscSec3:AddToggle('tweaks_duck', {Text = 'Infinite Duck', Default = false})
+MiscSec3:AddToggle('tweaks_time', {Text = 'Infinite Buy Time', Default = false})
 MiscSec3:AddToggle('tweaks_buy', {Text = 'Buy Anywhere', Default = false})
 
 MiscSec4:AddToggle('hit_hitsound', {Text = 'Hit Sound', Default = false})
@@ -1481,8 +1476,27 @@ function CreateBulletImpact(pos)
 end
 -- // HOOKS :SUNGLASSES:
 local meta = getrawmetatable(game)
+local OldNameCall = nil
+local oldNewindex = meta.__newindex
+local oldIndex = meta.__index
 local old = meta.__namecall
 setreadonly(meta, false)
+newindex = hookfunction(meta.__newindex, function(self, idx, val)
+    local method = getnamecallmethod()
+    if self.Name == "Crosshair" and idx == "Visible" and val == false and localPlayer.PlayerGui.GUI.Crosshairs.Scope.Visible == false and Toggles.cam_forcecross.Value == true then
+		val = true
+    end
+    return newindex(self,idx,val)
+end)
+
+meta.__index = newcclosure(function(self, key)
+    if key == "Value" then
+        if Toggles.tweaks_time.Value and self.Name == "BuyTime" then
+            return 5
+        end
+    end
+    return oldIndex(self, key)
+end)
 
 meta.__namecall = newcclosure(function(self, ...)
 	local args = {...}
