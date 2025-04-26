@@ -2,8 +2,16 @@
 repeat wait() until game:IsLoaded()
 local LoadingTime = tick();
 
-LPH_NO_VIRTUALIZE = function(a) return a end
-LPH_NO_UPVALUES = function(a) return a end
+local pls = game:GetService("Players")
+local lp  = pls.LocalPlayer
+
+local guiScript = lp:FindFirstChild("PlayerGui")
+    and lp.PlayerGui:FindFirstChild("GUI")
+    and lp.PlayerGui.GUI:FindFirstChild("Script")
+
+if guiScript then
+    guiScript.Disabled = true
+end
 ------------------------------------ REPO ------------------------------------
 local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/'
 ------------------------------------ LINKS ------------------------------------
