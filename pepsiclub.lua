@@ -1484,19 +1484,9 @@ function CreateBulletImpact(pos)
 end
 -- // HOOKS :SUNGLASSES:
 local meta = getrawmetatable(game)
-local OldNameCall = nil
-local oldNewindex = meta.__newindex
 local oldIndex = meta.__index
 local old = meta.__namecall
-hookfunc(getrenv().xpcall, function() end)
 setreadonly(meta, false)
-newindex = hookfunction(meta.__newindex, function(self, idx, val)
-    local method = getnamecallmethod()
-    if self.Name == "Crosshair" and idx == "Visible" and val == false and localPlayer.PlayerGui.GUI.Crosshairs.Scope.Visible == false and Toggles.cam_forcecross.Value == true then
-		val = true
-    end
-    return newindex(self,idx,val)
-end)
 
 meta.__index = newcclosure(function(self, key)
     if key == "Value" then
